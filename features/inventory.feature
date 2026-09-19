@@ -18,3 +18,8 @@ Feature: Product inventory
     When I add "Sauce Labs Backpack" to the cart
     And I add "Sauce Labs Bike Light" to the cart
     Then the cart badge should show "2"
+
+  Scenario: Remove a product from the cart
+    When I add "Sauce Labs Backpack" to the cart
+    And I remove "Sauce Labs Backpack" from the cart
+    Then the cart badge should not be visible

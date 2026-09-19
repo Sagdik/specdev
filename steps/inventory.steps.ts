@@ -27,6 +27,15 @@ When('I add {string} to the cart', async ({ page }, productName: string) => {
   await item.getByRole('button', { name: 'Add to cart' }).click();
 });
 
+When('I remove {string} from the cart', async ({ page }, productName: string) => {
+  const item = page.locator('.inventory_item', { hasText: productName });
+  await item.getByRole('button', { name: 'Remove' }).click();
+});
+
 Then('the cart badge should show {string}', async ({ page }, count: string) => {
   await expect(page.locator('.shopping_cart_badge')).toHaveText(count);
+});
+
+Then('the cart badge should not be visible', async ({ page }) => {
+  await expect(page.locator('.shopping_cart_badge')).toHaveCount(0);
 });
