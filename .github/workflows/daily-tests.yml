@@ -1,0 +1,46 @@
+name: Daily Spec-Driven Automation
+
+on:
+  schedule:
+    - cron: '30 3 * * *'   # 03:30 UTC daily (~09:00 IST)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-specs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run BDD spec suite
+        id: run_tests
+        run: npm test
+        continue-on-error: true   # still archive the report even if a scenario fails
+
+      - name: Archive today's report
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          mkdir -p "reports/$DATE"
+          cp -r playwright-report/* "reports/$DATE/" 2>/dev/null || true
+          echo "Run date: $DATE" > "reports/$DATE/SUMMARY.txt"
+          echo "Result: ${{ steps.run_tests.outcome }}" >> "reports/$DATE/SUMMARY.txt"
+
+      - name: Commit and push the report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Daily spec run: $(date +'%Y-%m-%d') (${{ steps.run_tests.outcome }})"
+          git push
