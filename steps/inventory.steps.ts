@@ -32,10 +32,34 @@ When('I remove {string} from the cart', async ({ page }, productName: string) =>
   await item.getByRole('button', { name: 'Remove' }).click();
 });
 
+When('I click the cart', async ({ page }) => {
+  await page.click('.shopping_cart_link');
+});
+
+When('I proceed to checkout', async ({ page }) => {
+  await page.click('#checkout');
+});
+
+When('I enter checkout information with first name {string}, last name {string}, postal code {string}', async ({ page }, firstName: string, lastName: string, postalCode: string) => {
+  await page.fill('#first-name', firstName);
+  await page.fill('#last-name', lastName);
+  await page.fill('#postal-code', postalCode);
+  await page.click('#continue');
+});
+
 Then('the cart badge should show {string}', async ({ page }, count: string) => {
   await expect(page.locator('.shopping_cart_badge')).toHaveText(count);
 });
 
 Then('the cart badge should not be visible', async ({ page }) => {
   await expect(page.locator('.shopping_cart_badge')).toHaveCount(0);
+});
+
+Then('I should see the checkout overview page', async ({ page }) => {
+  await expect(page).toHaveURL(/checkout-step-two\.html/);
+  await expect(page.locator('.title')).toHaveText('Checkout: Overview');
+});
+
+Then('I should see {string} in the order summary', async ({ page }, productName: string) => {
+  await expect(page.locator('.cart_list')).toContainText(productName);
 });
