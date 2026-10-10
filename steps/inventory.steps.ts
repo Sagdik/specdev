@@ -47,6 +47,10 @@ When('I enter checkout information with first name {string}, last name {string},
   await page.click('#continue');
 });
 
+When('I continue checkout without entering information', async ({ page }) => {
+  await page.click('#continue');
+});
+
 Then('the cart badge should show {string}', async ({ page }, count: string) => {
   await expect(page.locator('.shopping_cart_badge')).toHaveText(count);
 });
@@ -58,6 +62,11 @@ Then('the cart badge should not be visible', async ({ page }) => {
 Then('I should see the checkout overview page', async ({ page }) => {
   await expect(page).toHaveURL(/checkout-step-two\.html/);
   await expect(page.locator('.title')).toHaveText('Checkout: Overview');
+});
+
+Then('I should see the checkout error {string}', async ({ page }, error: string) => {
+  await expect(page).toHaveURL(/checkout-step-one\.html/);
+  await expect(page.locator('[data-test="error"]')).toHaveText(error);
 });
 
 Then('I should see {string} in the order summary', async ({ page }, productName: string) => {

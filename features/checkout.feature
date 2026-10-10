@@ -13,3 +13,10 @@ Feature: Checkout
     And I enter checkout information with first name "Sagar", last name "Tripathi", postal code "12345"
     Then I should see the checkout overview page
     And I should see "Sauce Labs Backpack" in the order summary
+
+  Scenario: Checkout requires customer information
+    When I add "Sauce Labs Backpack" to the cart
+    And I click the cart
+    And I proceed to checkout
+    And I continue checkout without entering information
+    Then I should see the checkout error "Error: First Name is required"
