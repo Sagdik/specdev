@@ -40,6 +40,14 @@ When('I proceed to checkout', async ({ page }) => {
   await page.click('#checkout');
 });
 
+When('I continue shopping', async ({ page }) => {
+  await page.click('#continue-shopping');
+});
+
+When('I cancel checkout', async ({ page }) => {
+  await page.click('#cancel');
+});
+
 When('I enter checkout information with first name {string}, last name {string}, postal code {string}', async ({ page }, firstName: string, lastName: string, postalCode: string) => {
   await page.fill('#first-name', firstName);
   await page.fill('#last-name', lastName);
@@ -70,5 +78,10 @@ Then('I should see the checkout error {string}', async ({ page }, error: string)
 });
 
 Then('I should see {string} in the order summary', async ({ page }, productName: string) => {
+  await expect(page.locator('.cart_list')).toContainText(productName);
+});
+
+Then('I should see the cart page with {string}', async ({ page }, productName: string) => {
+  await expect(page).toHaveURL(/cart\.html/);
   await expect(page.locator('.cart_list')).toContainText(productName);
 });
