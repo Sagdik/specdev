@@ -10,6 +10,10 @@ Feature: Product inventory
     When I sort products by "Price (low to high)"
     Then the products should be listed in ascending price order
 
+  Scenario: Sort products by name, Z to A
+    When I sort products by "Name (Z to A)"
+    Then the products should be listed in descending name order
+
   Scenario: Add a product to the cart
     When I add "Sauce Labs Backpack" to the cart
     Then the cart badge should show "1"

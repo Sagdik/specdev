@@ -26,6 +26,12 @@ Then('the products should be listed in ascending price order', async ({ page }) 
   expect(prices).toEqual(sorted);
 });
 
+Then('the products should be listed in descending name order', async ({ page }) => {
+  const productNames = await page.locator('.inventory_item_name').allTextContents();
+  const sorted = [...productNames].sort((a, b) => b.localeCompare(a));
+  expect(productNames).toEqual(sorted);
+});
+
 When('I add {string} to the cart', async ({ page }, productName: string) => {
   await productCard(page, productName).getByRole('button', { name: 'Add to cart' }).click();
 });
