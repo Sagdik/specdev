@@ -2,15 +2,20 @@ import { createBdd } from 'playwright-bdd';
 import { expect } from '@playwright/test';
 
 const { Given, When, Then } = createBdd();
+const DEFAULT_PASSWORD = 'secret_sauce';
+
+async function loginAs(page: any, username: string, password: string = DEFAULT_PASSWORD) {
+  await page.fill('#user-name', username);
+  await page.fill('#password', password);
+  await page.click('#login-button');
+}
 
 Given('I am on the SauceDemo login page', async ({ page }) => {
   await page.goto('/');
 });
 
 When('I log in as {string} with password {string}', async ({ page }, username: string, password: string) => {
-  await page.fill('#user-name', username);
-  await page.fill('#password', password);
-  await page.click('#login-button');
+  await loginAs(page, username, password);
 });
 
 Then('I should see the products inventory page', async ({ page }) => {
